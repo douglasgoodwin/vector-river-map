@@ -1,0 +1,69 @@
+# pg_tileserv configuration for river vector tiles
+# This replaces the old TileStache configuration
+
+[server]
+# HTTP server configuration
+HttpHost = "0.0.0.0"
+HttpPort = 7800
+HttpPath = "/"
+
+# CORS settings
+CORSOrigins = ["*"]
+
+# Cache settings
+CacheMaxAge = 3600
+
+[database]
+# Database connection is set via DATABASE_URL environment variable
+# Format: postgresql://user:password@host:port/database
+
+# Connection pool settings
+DbPoolMinConns = 2
+DbPoolMaxConns = 10
+
+[layers]
+# Layer configuration
+# pg_tileserv automatically discovers tables with geometry columns
+# and creates tile endpoints for them
+
+# For custom tile queries, you can create PostgreSQL functions
+# See: https://github.com/CrunchyData/pg_tileserv#function-layers
+
+[logging]
+# Logging level: TRACE, DEBUG, INFO, WARN, ERROR
+LogLevel = "INFO"
+
+# Enable access logging
+AccessLog = true
+
+# Note: The merged_rivers table will be automatically discovered
+# and served at: /public.merged_rivers/{z}/{x}/{y}.pbf
+#
+# For custom zoom-level filtering (like the old TileStache queries),
+# create a PostgreSQL function like:
+#
+# CREATE OR REPLACE FUNCTION public.rivers_filtered(z integer, x integer, y integer)
+# RETURNS bytea AS $$
+#   SELECT ST_AsMVT(q, 'rivers', 4096, 'geom')
+#   FROM (
+#     SELECT 
+#       ST_AsMVTGeom(
+#         geometry,
+#         ST_TileEnvelope(z, x, y),
+#         4096, 64, true
+#       ) AS geom,
+#       name, strahler, huc8
+#     FROM merged_rivers
+#     WHERE geometry && ST_TileEnvelope(z, x, y)
+#     AND strahler >= CASE
+#       WHEN z < 6 THEN 6
+#       WHEN z < 8 THEN 5
+#       WHEN z < 9 THEN 4
+#       WHEN z < 10 THEN 3
+#       WHEN z < 11 THEN 2
+#       ELSE 1
+#     END
+#   ) AS q;
+# $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE;
+#
+# Then access at: /public.rivers_filtered/{z}/{x}/{y}.pbf

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapLibre GL Rivers - Modern Vector Tile Map</title>
+    
+    <!-- MapLibre GL JS -->
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 1;
+        }
+        
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #1e3a8a;
+        }
+        
+        .info-panel p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        
+        .info-panel .highlight {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-size: 12px;
+            z-index: 1;
+        }
+        
+        .legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .legend-line {
+            width: 30px;
+            height: 2px;
+            margin-right: 8px;
+            background: #3b82f6;
+        }
+        
+        .maplibregl-popup-content {
+            padding: 12px;
+            border-radius: 6px;
+        }
+        
+        .maplibregl-popup-content h4 {
+            margin: 0 0 8px 0;
+            color: #1e3a8a;
+        }
+        
+        .maplibregl-popup-content p {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+        
+        .github-link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+        
+        .github-link img {
+            width: 120px;
+            height: auto;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .github-link img:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <a href="https://github.com/douglasgoodwin/vector-river-map" class="github-link" target="_blank">
+        <img src="forkme.png" alt="Fork me on GitHub">
+    </a>
+    
+    <div class="info-panel">
+        <h3>🏞️ American Rivers Vector Map</h3>
+        <p>Click on any river to see details</p>
+        <p class="highlight">Hover to highlight rivers</p>
+        <p style="font-size: 11px; color: #64748b; margin-top: 10px;">
+            Modernized 2025 • Using MapLibre GL JS & MVT
+        </p>
+    </div>
+    
+    <div class="legend">
+        <h4>River Classification (Strahler Order)</h4>
+        <div class="legend-item">
+            <div class="legend-line" style="height: 4px;"></div>
+            <span>Major Rivers (6+)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="height: 3px;"></div>
+            <span>Large Rivers (4-5)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="height: 2px;"></div>
+            <span>Medium Rivers (2-3)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-line" style="height: 1px;"></div>
+            <span>Small Streams (1)</span>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const TILE_SERVER = 'http://localhost:8000/rivers/{z}/{x}/{y}.json';
+        const INITIAL_CENTER = [-120.976, 37.958];
+        const INITIAL_ZOOM = 8;
+        
+        // Initialize map
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: {
+                version: 8,
+                sources: {
+                    // Basemap - ESRI World Shaded Relief
+                    'esri-relief': {
+                        type: 'raster',
+                        tiles: [
+                            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        tileSize: 256,
+                        attribution: '<a href="https://www.arcgis.com/home/item.html?id=9c5370d0b54f4de1b48a3792d7377ff2">ESRI Shaded Relief</a>'
+                    },
+                    // State boundaries (loaded from static file)
+                    'us-states': {
+                        type: 'geojson',
+                        data: 'us-states.js'  // This needs to be converted to proper GeoJSON
+                    },
+                    // River vector tiles (GeoJSON for now, will upgrade to MVT)
+                    'rivers': {
+                        type: 'geojson',
+                        data: null,  // Will be loaded dynamically per tile
+                        tiles: [TILE_SERVER],
+                        minzoom: 0,
+                        maxzoom: 13
+                    }
+                },
+                layers: [
+                    // Basemap layer
+                    {
+                        id: 'esri-relief-layer',
+                        type: 'raster',
+                        source: 'esri-relief',
+                        paint: {
+                            'raster-opacity': 0.7
+                        }
+                    },
+                    // State boundaries
+                    {
+                        id: 'state-boundaries',
+                        type: 'line',
+                        source: 'us-states',
+                        paint: {
+                            'line-color': '#444',
+                            'line-width': 1,
+                            'line-opacity': 0.8
+                        }
+                    },
+                    // River lines
+                    {
+                        id: 'rivers-layer',
+                        type: 'line',
+                        source: 'rivers',
+                        paint: {
+                            'line-color': [
+                                'interpolate',
+                                ['linear'],
+                                ['get', 'strahler'],
+                                1, '#93c5fd',  // Light blue for small streams
+                                3, '#3b82f6',  // Medium blue
+                                5, '#1e40af',  // Dark blue for large rivers
+                                7, '#1e3a8a'   // Very dark blue for major rivers
+                            ],
+                            'line-width': [
+                                'interpolate',
+                                ['exponential', 1.5],
+                                ['zoom'],
+                                4, ['*', ['get', 'strahler'], 0.3],
+                                8, ['*', ['get', 'strahler'], 0.8],
+                                13, ['*', ['get', 'strahler'], 1.5]
+                            ],
+                            'line-opacity': 0.9
+                        }
+                    },
+                    // Hover highlight layer
+                    {
+                        id: 'rivers-hover',
+                        type: 'line',
+                        source: 'rivers',
+                        paint: {
+                            'line-color': '#fbbf24',
+                            'line-width': 3,
+                            'line-opacity': 0
+                        }
+                    }
+                ]
+            },
+            center: INITIAL_CENTER,
+            zoom: INITIAL_ZOOM,
+            maxZoom: 13
+        });
+        
+        // Add navigation controls
+        map.addControl(new maplibregl.NavigationControl(), 'top-left');
+        
+        // Add scale control
+        map.addControl(new maplibregl.ScaleControl({
+            maxWidth: 200,
+            unit: 'imperial'
+        }), 'bottom-left');
+        
+        // Load US states from the existing file
+        // Note: us-states.js needs to be properly formatted as GeoJSON
+        fetch('us-states.js')
+            .then(response => response.text())
+            .then(text => {
+                // Extract the usStates variable
+                const match = text.match(/var usStates = ({.*});/s);
+                if (match) {
+                    const statesData = JSON.parse(match[1]);
+                    map.getSource('us-states').setData(statesData);
+                }
+            })
+            .catch(err => console.warn('Could not load state boundaries:', err));
+        
+        // River interaction: hover effect
+        let hoveredRiverId = null;
+        
+        map.on('mousemove', 'rivers-layer', (e) => {
+            if (e.features.length > 0) {
+                if (hoveredRiverId !== null) {
+                    map.setFeatureState(
+                        { source: 'rivers', id: hoveredRiverId },
+                        { hover: false }
+                    );
+                }
+                hoveredRiverId = e.features[0].id;
+                map.setFeatureState(
+                    { source: 'rivers', id: hoveredRiverId },
+                    { hover: true }
+                );
+                map.getCanvas().style.cursor = 'pointer';
+            }
+        });
+        
+        map.on('mouseleave', 'rivers-layer', () => {
+            if (hoveredRiverId !== null) {
+                map.setFeatureState(
+                    { source: 'rivers', id: hoveredRiverId },
+                    { hover: false }
+                );
+            }
+            hoveredRiverId = null;
+            map.getCanvas().style.cursor = '';
+        });
+        
+        // River interaction: popup on click
+        map.on('click', 'rivers-layer', (e) => {
+            const feature = e.features[0];
+            const props = feature.properties;
+            
+            const name = props.name || 'Unnamed waterway';
+            const strahler = props.strahler || 'Unknown';
+            const huc8 = props.huc8 || 'Unknown';
+            
+            const html = `
+                <h4>${name}</h4>
+                <p><strong>Strahler Order:</strong> ${strahler}</p>
+                <p><strong>HUC8 Watershed:</strong> 
+                   <a href="http://water.usgs.gov/lookup/getwatershed?${huc8}" target="_blank">
+                       ${huc8}
+                   </a>
+                </p>
+                <p style="font-size: 11px; color: #64748b; margin-top: 8px;">
+                    ${getStrahlerDescription(strahler)}
+                </p>
+            `;
+            
+            new maplibregl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(html)
+                .addTo(map);
+        });
+        
+        function getStrahlerDescription(order) {
+            const descriptions = {
+                1: 'Small headwater stream',
+                2: 'Small tributary',
+                3: 'Medium tributary',
+                4: 'Medium river',
+                5: 'Large river',
+                6: 'Major river',
+                7: 'Major river system',
+                8: 'Continental river system'
+            };
+            return descriptions[order] || 'Waterway';
+        }
+        
+        // Add current location to URL hash
+        map.on('moveend', () => {
+            const center = map.getCenter();
+            const zoom = map.getZoom();
+            window.location.hash = `#${zoom.toFixed(2)}/${center.lat.toFixed(4)}/${center.lng.toFixed(4)}`;
+        });
+        
+        // Restore location from URL hash
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1);
+            const parts = hash.split('/');
+            if (parts.length === 3) {
+                map.setZoom(parseFloat(parts[0]));
+                map.setCenter([parseFloat(parts[2]), parseFloat(parts[1])]);
+            }
+        }
+        
+        // Debug info
+        map.on('load', () => {
+            console.log('Map loaded successfully');
+            console.log('Tile server:', TILE_SERVER);
+            console.log('Note: This client still uses GeoJSON tiles.');
+            console.log('For production, upgrade to MVT tiles with pg_tileserv');
+        });
+    </script>
+</body>
+</html>

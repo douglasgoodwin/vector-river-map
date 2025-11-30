@@ -1,22 +1,27 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Merge river records from NHDPlus.
 NHDPlus breaks a river up into lots of separate little LineStrings,
 separate rows in the database. This makes for inefficient queries
-and GeoJSON, so we merge them here. Rivers are merged on gnis_id
+and tiles, so we merge them here. Rivers are merged on gnis_id
 if one is present, or else the HUC8 from reachcode."""
 
 import psycopg2
 import time
+from typing import Optional
 
-conn = psycopg2.connect("dbname=rivers")
+# Database connection - can be overridden via environment variable
+import os
+DB_CONNECTION = os.getenv('DATABASE_URL', 'dbname=rivers')
+
+conn = psycopg2.connect(DB_CONNECTION)
 conn.autocommit = True      # required for Postgres bug workaround below
 cur = conn.cursor()
 
 start = time.time()
-def log(msg):
-    "Log a message with some reporting on time elapsed"
-    print ("{:>7.2f}s {}".format(time.time()-start, msg))
+def log(msg: str) -> None:
+    """Log a message with some reporting on time elapsed"""
+    print(f"{time.time()-start:>7.2f}s {msg}")
 
 # Create the schema
 cur.execute("""drop table if exists merged_rivers;""")
@@ -40,7 +45,7 @@ insertCursor = conn.cursor()
 # could span multiple HUC8s. We just pick one.
 cur.execute("select distinct(gnis_id) from rivers where gnis_id is not null;")
 count = cur.rowcount
-log("Merging %d unique gnis_ids, roughly %d seconds" % (count, count/70))
+log(f"Merging {count} unique gnis_ids, roughly {count/70:.0f} seconds")
 for (gnisId,) in cur:
     insertCursor.execute("""
         insert into merged_rivers(gnis_id, name, strahler, huc8, geometry)
@@ -56,7 +61,7 @@ for (gnisId,) in cur:
     # Partial status report
     count -= 1
     if (count % 10000 == 0):
-        log("{:7} gnis_ids to go {:5} rows added for gnis_id {}".format(count, insertCursor.rowcount, gnisId))
+        log(f"{count:7} gnis_ids to go {insertCursor.rowcount:5} rows added for gnis_id {gnisId}")
 
 ### Merge rivers on HUC8 if gnis_id is null.
 # Iterate through each unique HUC8 and create merged geometry
@@ -65,7 +70,7 @@ for (gnisId,) in cur:
 
 cur.execute("select distinct(huc8) from rivers where gnis_id is null;")
 count = cur.rowcount
-log("Merging %d unique HUC8s, roughly %d seconds" % (count, count/6))
+log(f"Merging {count} unique HUC8s, roughly {count/6:.0f} seconds")
 for (huc8,) in cur:
     # Try each insert several times; working around Postgres bug #8167
     tries = 3
@@ -89,16 +94,16 @@ for (huc8,) in cur:
             # Work around Postgres bug #8167 on MacOS. Details at
             # https://gist.github.com/NelsonMinar/5588719
             if str(e).strip().endswith("Invalid argument"):
-                log("Postgres bug #8167 on insert for HUC8 {}. Tries left: {}".format(huc8, tries))
+                log(f"Postgres bug #8167 on insert for HUC8 {huc8}. Tries left: {tries}")
             else:
-                raise e;
+                raise e
     if not success:
-        log("Failed to insert HUC8 {}, skipping.".format(huc8))
+        log(f"Failed to insert HUC8 {huc8}, skipping.")
 
     # Partial status report
     count -= 1
     if (count % 100 == 0):
-        log("{:5} HUC8s to go {:5} rows added for HUC8 {}".format(count, insertCursor.rowcount, huc8))
+        log(f"{count:5} HUC8s to go {insertCursor.rowcount:5} rows added for HUC8 {huc8}")
 
 # Commit the new table
 conn.commit()

@@ -1,0 +1,25 @@
+# Python dependencies for vector-river-map
+# Updated for Python 3.12+
+
+# Database
+psycopg2-binary>=2.9.9  # PostgreSQL adapter (binary for easy install)
+# Alternative: psycopg[binary]>=3.1.0  # Modern async version
+
+# HTTP and testing
+requests>=2.31.0
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Optional: For async batch requests (replaces grequests)
+aiohttp>=3.9.0
+httpx>=0.25.0
+
+# Data processing (if needed)
+# shapely>=2.0.0  # Geometric operations
+# geopandas>=0.14.0  # GeoDataFrame support
+# pyproj>=3.6.0  # Coordinate transformations
+
+# Development tools
+black>=23.10.0  # Code formatter
+ruff>=0.1.0  # Fast linter
+mypy>=1.6.0  # Type checking
