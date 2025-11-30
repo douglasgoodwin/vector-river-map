@@ -27,7 +27,7 @@ def log(msg: str) -> None:
 cur.execute("""drop table if exists merged_rivers;""")
 cur.execute("""
 create table merged_rivers (
-    gnis_id integer,
+    gnis_id text,
     name text,
     huc8 text,
     strahler smallint,
