@@ -1,1 +1,17 @@
-NHD
+# Python virtual environment
+venv/
+.venv/
+env/
+.env/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# macOS specific files
+.DS_Store
+
+# Editor/IDE specific files (optional, depending on your setup)
+.vscode/
+.idea/
+
