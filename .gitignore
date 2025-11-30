@@ -17,3 +17,4 @@ __pycache__/
 .vscode/
 .idea/
 
+pg_tileserv_macos
