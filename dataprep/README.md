@@ -16,7 +16,17 @@ This directory contains scripts for downloading and importing NHDPlus High Resol
 # 3. Merge river segments
 python3 mergeRivers.py
 
-# 4. Check your data
+# 4. Fix geometry column for tile serving
+psql rivers << 'EOF'
+ALTER TABLE merged_rivers 
+  ALTER COLUMN geometry TYPE geometry(GEOMETRY, 4269) 
+  USING ST_SetSRID(geometry, 4269);
+DROP INDEX IF EXISTS merged_rivers_geometry_gist;
+CREATE INDEX merged_rivers_geometry_gist ON merged_rivers USING gist(geometry);
+VACUUM ANALYZE merged_rivers;
+EOF
+
+# 5. Check your data
 cd .. && ./checkStatus.sh
 ```
 
@@ -146,7 +156,11 @@ Diagnostic script to examine the database schema and field names.
    └─> mergeRivers.py
         └─> Creates 'merged_rivers' table for serving
 
-5. Serve Tiles
+5. Fix Geometry Column
+   └─> ALTER TABLE (set SRID to 4269)
+        └─> Registers geometry with PostGIS for tile serving
+
+6. Serve Tiles
    └─> pg_tileserv
         └─> http://localhost:7800/public.merged_rivers/{z}/{x}/{y}.pbf
 ```
@@ -268,6 +282,21 @@ psql -l | grep rivers
 
 # Monitor progress - it prints updates every 10,000 features
 # You can stop with Ctrl+C and restart - it will recreate the table
+```
+
+**Problem:** pg_tileserv shows "Unable to get layer 'public.merged_rivers'"
+```bash
+# The geometry column needs to be re-registered after merge
+psql rivers << 'EOF'
+ALTER TABLE merged_rivers 
+  ALTER COLUMN geometry TYPE geometry(GEOMETRY, 4269) 
+  USING ST_SetSRID(geometry, 4269);
+DROP INDEX IF EXISTS merged_rivers_geometry_gist;
+CREATE INDEX merged_rivers_geometry_gist ON merged_rivers USING gist(geometry);
+VACUUM ANALYZE merged_rivers;
+EOF
+
+# Then restart pg_tileserv
 ```
 
 **Problem:** Out of memory during merge

@@ -154,10 +154,10 @@
     </div>
 
     <script>
-        // Configuration
-        const TILE_SERVER = 'http://localhost:8000/rivers/{z}/{x}/{y}.json';
-        const INITIAL_CENTER = [-120.976, 37.958];
-        const INITIAL_ZOOM = 8;
+        // Configuration - Updated for pg_tileserv MVT tiles
+        const TILE_SERVER = 'http://localhost:7800/public.merged_rivers/{z}/{x}/{y}.pbf';
+        const INITIAL_CENTER = [-122.49, 40.82]; // Northern California
+        const INITIAL_ZOOM = 7;
         
         // Initialize map
         const map = new maplibregl.Map({
@@ -174,18 +174,12 @@
                         tileSize: 256,
                         attribution: '<a href="https://www.arcgis.com/home/item.html?id=9c5370d0b54f4de1b48a3792d7377ff2">ESRI Shaded Relief</a>'
                     },
-                    // State boundaries (loaded from static file)
-                    'us-states': {
-                        type: 'geojson',
-                        data: 'us-states.js'  // This needs to be converted to proper GeoJSON
-                    },
-                    // River vector tiles (GeoJSON for now, will upgrade to MVT)
+                    // River vector tiles - MVT format from pg_tileserv
                     'rivers': {
-                        type: 'geojson',
-                        data: null,  // Will be loaded dynamically per tile
+                        type: 'vector',
                         tiles: [TILE_SERVER],
                         minzoom: 0,
-                        maxzoom: 13
+                        maxzoom: 14
                     }
                 },
                 layers: [
@@ -198,59 +192,40 @@
                             'raster-opacity': 0.7
                         }
                     },
-                    // State boundaries
-                    {
-                        id: 'state-boundaries',
-                        type: 'line',
-                        source: 'us-states',
-                        paint: {
-                            'line-color': '#444',
-                            'line-width': 1,
-                            'line-opacity': 0.8
-                        }
-                    },
                     // River lines
                     {
                         id: 'rivers-layer',
                         type: 'line',
                         source: 'rivers',
+                        'source-layer': 'public.merged_rivers',
                         paint: {
                             'line-color': [
                                 'interpolate',
                                 ['linear'],
                                 ['get', 'strahler'],
                                 1, '#93c5fd',  // Light blue for small streams
+                                2, '#60a5fa',
                                 3, '#3b82f6',  // Medium blue
-                                5, '#1e40af',  // Dark blue for large rivers
-                                7, '#1e3a8a'   // Very dark blue for major rivers
+                                4, '#2563eb',
+                                5, '#1d4ed8',  // Dark blue for large rivers
+                                6, '#1e40af'
                             ],
                             'line-width': [
                                 'interpolate',
                                 ['exponential', 1.5],
                                 ['zoom'],
-                                4, ['*', ['get', 'strahler'], 0.3],
-                                8, ['*', ['get', 'strahler'], 0.8],
-                                13, ['*', ['get', 'strahler'], 1.5]
+                                4, ['*', ['coalesce', ['get', 'strahler'], 1], 0.3],
+                                8, ['*', ['coalesce', ['get', 'strahler'], 1], 0.8],
+                                13, ['*', ['coalesce', ['get', 'strahler'], 1], 1.5]
                             ],
-                            'line-opacity': 0.9
-                        }
-                    },
-                    // Hover highlight layer
-                    {
-                        id: 'rivers-hover',
-                        type: 'line',
-                        source: 'rivers',
-                        paint: {
-                            'line-color': '#fbbf24',
-                            'line-width': 3,
-                            'line-opacity': 0
+                            'line-opacity': 0.8
                         }
                     }
                 ]
             },
             center: INITIAL_CENTER,
             zoom: INITIAL_ZOOM,
-            maxZoom: 13
+            maxZoom: 14
         });
         
         // Add navigation controls
@@ -262,48 +237,12 @@
             unit: 'imperial'
         }), 'bottom-left');
         
-        // Load US states from the existing file
-        // Note: us-states.js needs to be properly formatted as GeoJSON
-        fetch('us-states.js')
-            .then(response => response.text())
-            .then(text => {
-                // Extract the usStates variable
-                const match = text.match(/var usStates = ({.*});/s);
-                if (match) {
-                    const statesData = JSON.parse(match[1]);
-                    map.getSource('us-states').setData(statesData);
-                }
-            })
-            .catch(err => console.warn('Could not load state boundaries:', err));
-        
-        // River interaction: hover effect
-        let hoveredRiverId = null;
-        
-        map.on('mousemove', 'rivers-layer', (e) => {
-            if (e.features.length > 0) {
-                if (hoveredRiverId !== null) {
-                    map.setFeatureState(
-                        { source: 'rivers', id: hoveredRiverId },
-                        { hover: false }
-                    );
-                }
-                hoveredRiverId = e.features[0].id;
-                map.setFeatureState(
-                    { source: 'rivers', id: hoveredRiverId },
-                    { hover: true }
-                );
-                map.getCanvas().style.cursor = 'pointer';
-            }
+        // Change cursor on hover
+        map.on('mouseenter', 'rivers-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
         });
         
         map.on('mouseleave', 'rivers-layer', () => {
-            if (hoveredRiverId !== null) {
-                map.setFeatureState(
-                    { source: 'rivers', id: hoveredRiverId },
-                    { hover: false }
-                );
-            }
-            hoveredRiverId = null;
             map.getCanvas().style.cursor = '';
         });
         
@@ -324,6 +263,7 @@
                        ${huc8}
                    </a>
                 </p>
+                <p><strong>GNIS ID:</strong> ${props.gnis_id || 'N/A'}</p>
                 <p style="font-size: 11px; color: #64748b; margin-top: 8px;">
                     ${getStrahlerDescription(strahler)}
                 </p>
@@ -368,10 +308,10 @@
         
         // Debug info
         map.on('load', () => {
-            console.log('Map loaded successfully');
+            console.log('✓ Map loaded successfully');
             console.log('Tile server:', TILE_SERVER);
-            console.log('Note: This client still uses GeoJSON tiles.');
-            console.log('For production, upgrade to MVT tiles with pg_tileserv');
+            console.log('Using MVT tiles from pg_tileserv');
+            console.log('Data coverage: Western US');
         });
     </script>
 </body>
