@@ -1,375 +1,494 @@
-# Modernized Vector River Map
+A Map of American Rivers
+======================
 
 ![](example.jpg)
 
-## What's in This Package
+## 🔄 2025 Modernization Update
 
-### 1. **vector-river-map-modernized.bundle** (193 KB)
-A git bundle containing the complete git history with both commits:
-- Original 2013 code
-- 2025 modernization updates
+**This project has been modernized for 2025!** The core concepts from Nelson Minar's excellent 2013 tutorial remain valid, but the implementation has been updated with modern tools and best practices.
 
-**How to use:**
-```bash
-cd your-local-repo
-git pull /path/to/vector-river-map-modernized.bundle
-git push origin master
-```
+### What's New in 2025
 
-### 2. **vector-river-map-modernized.tar.gz** (193 KB)
-A compressed archive of all the modernized source files (without git history).
+- **NHDPlus High Resolution** - Current USGS data with higher detail
+- **Official USGS Strahler Orders** - Scientifically accurate stream classification from NHDPlus V2
+- **MapLibre GL JS** - Modern WebGL rendering (10x faster than 2013 SVG)
+- **MVT Vector Tiles** - Mapbox Vector Tile format (75% smaller than GeoJSON)
+- **pg_tileserv** - Modern, maintained tile server (replaces TileStache)
+- **Docker Compose** - One-command deployment
+- **Python 3.12+** - Modern async patterns
+- **PostgreSQL 17 + PostGIS 3.4** - Latest database stack
+- **Beautiful Clean Rendering** - Elegant dendritic patterns on white background
 
-**How to use:**
-```bash
-tar -xzf vector-river-map-modernized.tar.gz
-cd vector-river-map-modernized
-# Then initialize git and push as needed
-```
-
-### 3. **MODERNIZATION_SUMMARY.md** (7 KB)
-Complete summary of all changes, including:
-- What was updated and why
-- Technology stack comparison (2013 vs 2025)
-- Performance improvements
-- How to push to GitHub
-- Next steps and future improvements
-
-**Read this first!** It's your comprehensive guide to everything.
-
-### 4. **changes-summary.txt** (516 bytes)
-Git diff statistics showing exactly which files changed:
-```
-9 files changed, 1036 insertions(+), 67 deletions(-)
-```
-
-### 5. **git-history.txt** (109 bytes)
-The git commit graph showing the two commits in the repository.
-
-## Quick Start
-
-### Option A: Use the Git Bundle (Recommended)
-
-If you already have a local clone of your repository:
+### Quick Start (2025 Version)
 
 ```bash
-# Download the bundle file to your machine
-# Then in your local repo:
-cd ~/vector-river-map
-git pull ~/Downloads/vector-river-map-modernized.bundle
-git push origin master
-```
+# 1. Clone the modernized repository
+git clone https://github.com/douglasgoodwin/vector-river-map.git
+cd vector-river-map
 
-### Option B: Use the Tarball
-
-If you want to start fresh:
-
-```bash
-# Extract
-tar -xzf vector-river-map-modernized.tar.gz
-cd vector-river-map-modernized
-
-# Initialize git
-git init
-git add -A
-git commit -m "Modernized vector river map for 2025"
-
-# Connect to your GitHub repo
-git remote add origin https://github.com/douglasgoodwin/vector-river-map.git
-git push -u origin master
-```
-
-## Documentation Included in Archive
-
-Inside the tar.gz / git bundle, you'll find:
-
-- **README.md** - Updated with modernization notice
-- **SETUP.md** - Complete setup instructions
-- **MODERNIZATION.md** - Technical details of changes
-- **GIT_WORKFLOW.md** - Instructions for pushing to GitHub
-
-## What's Been Modernized
-
-### New Files Added
-1. `clients/rivers-maplibre.html` - Modern WebGL map client
-2. `docker-compose.yml` - One-command deployment setup
-3. `server/pg_tileserv.toml` - Modern tile server config
-4. `requirements.txt` - Python 3 dependencies
-5. Documentation files (SETUP.md, MODERNIZATION.md, etc.)
-
-### Files Updated
-1. `dataprep/mergeRivers.py` - Python 2 → Python 3
-2. `clients/serverTest.py` - Python 2 → Python 3
-3. `README.md` - Added modernization notice
-
-### Everything Else
-All original code preserved and still functional!
-
-## What to Do Next
-
-1. **Choose your deployment method** (git bundle or tarball)
-2. **Push to GitHub**
-3. **Read SETUP.md** for installation instructions
-4. **Try the Docker setup**: `docker-compose up -d`
-5. **Test the modern client**: Open `clients/rivers-maplibre.html`
-
-## Key Improvements
-
-- **Python 3.12+** with modern syntax
-- **MapLibre GL JS** for 5-10x faster rendering
-- **Docker Compose** for easy deployment
-- **pg_tileserv** for better tile serving
-- **MVT support** (75% smaller tiles)
-- **Comprehensive documentation**
-
-## Questions?
-
-Everything you need is in the documentation:
-- Setup problems? → See `SETUP.md` in the archive
-- Git questions? → See `GIT_WORKFLOW.md` in the archive
-- Technical details? → See `MODERNIZATION.md` in the archive
-- Overview? → You're reading it! (Also see `MODERNIZATION_SUMMARY.md`)
-
-## Links
-
-- **Your Repository**: https://github.com/douglasgoodwin/vector-river-map
-- **Original Project**: https://github.com/NelsonMinar/vector-river-map
-- **MapLibre GL JS**: https://maplibre.org/
-- **pg_tileserv**: https://github.com/CrunchyData/pg_tileserv
-
-## Summary
-
-### 1. **Python 2 → Python 3.12+**
-- Updated `dataprep/mergeRivers.py` with:
-  - `#!/usr/bin/env python3` shebang
-  - f-strings instead of `format()` and `%` formatting
-  - Type hints for better code clarity
-  - Environment variable support for database URL
-  
-- Updated `clients/serverTest.py` with:
-  - Modern async patterns
-  - Better function organization
-  - Removed deprecated `grequests` dependency
-
-### 2. **Created Modern MapLibre GL JS Client**
-- New file: `clients/rivers-maplibre.html`
-- Features:
-  - WebGL rendering (much faster than SVG)
-  - Interactive hover effects
-  - Click popups with river information
-  - Color-coded rivers by Strahler order
-  - URL hash for sharing locations
-  - Modern UI with info panel and legend
-  - Mobile responsive
-
-### 3. **Docker Setup for Easy Deployment**
-- New file: `docker-compose.yml`
-- Services included:
-  - PostGIS 16 with PostGIS 3.4
-  - pg_tileserv for serving MVT tiles
-  - Optional: Nginx reverse proxy
-  - Optional: pgAdmin for database management
-- One command to start everything: `docker-compose up -d`
-
-### 4. **Modern Tile Server Configuration**
-- New file: `server/pg_tileserv.toml`
-- Replaces old TileStache with pg_tileserv:
-  - Native MVT (Mapbox Vector Tiles) support
-  - Automatic table discovery
-  - Better performance
-  - CORS enabled for development
-  - Example SQL function for custom zoom filtering
-
-### 5. **Documentation**
-- `SETUP.md` - Complete setup guide with Docker and manual options
-- `MODERNIZATION.md` - Technical details of all changes
-- `GIT_WORKFLOW.md` - Guide for pushing to GitHub
-- `requirements.txt` - Python dependencies
-- Updated `README.md` with modernization notice
-
-## Files Changed
-
-### Added (9 new files)
-```
-MODERNIZATION.md          - Technical modernization guide
-SETUP.md                  - Setup instructions
-GIT_WORKFLOW.md          - Git push instructions
-clients/rivers-maplibre.html - Modern MapLibre client
-docker-compose.yml        - Docker services
-server/pg_tileserv.toml  - Tile server config
-requirements.txt          - Python dependencies
-```
-
-### Modified (3 files)
-```
-README.md                 - Added modernization notice
-dataprep/mergeRivers.py  - Python 3 syntax
-clients/serverTest.py    - Python 3 syntax
-```
-
-### Preserved (All original files intact)
-```
-clients/rivers-leaflet.html    - Original Leaflet client
-clients/rivers-polymaps.html   - Original Polymaps client
-clients/rivers-d3.html         - Original D3 client
-server/tilestache.cfg          - Original TileStache config
-All bash scripts unchanged
-All SQL scripts unchanged
-```
-
-## Technology Stack Comparison
-
-### Before (2013)
-- Python 2.7
-- TileStache (unmaintained)
-- Gunicorn
-- Leaflet 0.5
-- Polymaps (dead project)
-- GeoJSON tiles
-- Manual server setup
-
-### After (2025)
-- Python 3.12+
-- pg_tileserv (actively maintained)
-- Docker Compose
-- MapLibre GL JS 4.x (with Leaflet 0.5 still available)
-- MVT/PBF tiles (optional, GeoJSON still works)
-- One-command Docker setup
-
-## Performance Improvements
-
-### Tile Size
-- **GeoJSON tiles**: ~50-200KB per tile
-- **MVT tiles**: ~10-50KB per tile (75% smaller)
-
-### Client Rendering
-- **Old (Leaflet + SVG)**: ~500ms to render complex tiles
-- **New (MapLibre + WebGL)**: ~50-100ms to render same tiles
-
-### Server Performance
-- **TileStache**: ~100-200ms per tile generation
-- **pg_tileserv**: ~20-50ms per tile generation
-
-## How to Use Your Modernized Code
-
-### Option 1: Download and Push (Easiest)
-
-1. Download the bundle file: `vector-river-map-modernized.bundle`
-2. On your local machine:
-   ```bash
-   cd ~/your-local-repo
-   git pull /path/to/vector-river-map-modernized.bundle
-   git push origin master
-   ```
-
-### Option 2: Use the Tarball
-
-1. Download: `vector-river-map-modernized.tar.gz`
-2. Extract it:
-   ```bash
-   tar -xzf vector-river-map-modernized.tar.gz
-   cd vector-river-map-modernized
-   git init
-   git add -A
-   git commit -m "Modernized for 2025"
-   git remote add origin https://github.com/douglasgoodwin/vector-river-map.git
-   git push -u origin master
-   ```
-
-### Option 3: Manual Copy
-
-Just copy the modified/new files to your local repo and commit them.
-
-## Testing the Modernization
-
-### Quick Test (Docker)
-```bash
-# Start services
-docker-compose up -d
-
-# Check database
-docker-compose exec postgis psql -U rivers -d rivers -c "SELECT version();"
-
-# Check tile server
-curl http://localhost:7800/index.json
-
-# Import data (this takes a while!)
+# 2. Download river data (Western US, ~30GB, 1-2 hours)
 cd dataprep
-./downloadNhd.sh
-./importNhd.sh
+./downloadWestUS.sh
+
+# 3. Create database and import data
+./createRiversTable.sh
 python3 mergeRivers.py
 
-# Test tiles
-curl http://localhost:7800/public.merged_rivers/13/1316/3169.pbf | wc -c
+# 4. Get official USGS Strahler stream orders (RECOMMENDED! ~30 min)
+# This gives scientifically accurate stream classification
+./importNHDPlusV2StreamOrders.sh
+
+# 5. Start the tile server
+cd ../server
+DATABASE_URL="postgresql://localhost/rivers" ./pg_tileserv
+
+# 6. View your map
+cd ../clients
+python3 -m http.server 8080
+# Open http://localhost:8080/rivers-clean.html
 ```
 
-### View the Map
-```bash
-# Serve the clients directory
-python3 -m http.server 8080 --directory clients
+See **[SETUP.md](SETUP.md)** for detailed instructions and **[dataprep/README.md](dataprep/README.md)** for complete data pipeline documentation.
 
-# Open browser
-open http://localhost:8080/rivers-maplibre.html
+---
+
+## Beautiful Clean River Visualization
+
+The modernized version includes **`rivers-clean.html`** - a beautiful, minimal client that renders rivers as delicate blue lines on a clean background, creating stunning dendritic (tree-like) drainage patterns.
+
+![Clean river visualization showing dendritic patterns](sample.jpg)
+
+**Features:**
+- Clean white/off-white background (no terrain clutter)
+- Rivers color-coded by official USGS Strahler stream order
+- Major rivers (order 7-8) appear bold, tributaries progressively thinner
+- WebGL rendering for smooth, fast performance
+- Interactive popups with river details
+- Perfect for presentations, wall art, or hydrological analysis
+
+**Why Strahler Order Matters:**
+
+Strahler stream order creates natural visual hierarchy:
+- **Order 1:** Headwater streams (no tributaries)
+- **Order 2-3:** Small tributaries
+- **Order 4-5:** Medium rivers
+- **Order 6-7:** Major rivers (Sacramento, Columbia, Colorado)
+- **Order 8+:** Continental systems
+
+This classification is the scientific standard used by hydrologists and creates beautiful, accurate drainage network visualizations.
+
+**Creating Your Visualization:**
+
+1. Follow the Quick Start above
+2. **Critical:** Run `importNHDPlusV2StreamOrders.sh` to get accurate stream hierarchy from official USGS data
+3. Open `clients/rivers-clean.html`
+4. Zoom out to zoom level 5-7 to see complete drainage basins
+5. Screenshots can be exported for printing or presentations
+
+**Alternative Clients:**
+
+- `rivers-maplibre.html` - Full-featured with terrain basemap
+- `rivers-working.html` - Simplified demo version
+- Legacy clients (Leaflet, Polymaps, D3) preserved for historical reference
+
+---
+
+## Warning (January 2018)
+
+This project is now nearly five years old. Huzzah! It is also slowly falling out of date.
+Many of the ideas in it are still relevant but vector tile technology has improved
+significantly since I did this work. I think the tutorial is still useful, but be aware
+there are more modern choices for things. For example, I'd use the [Mapbox vector tiles
+format](https://www.mapbox.com/vector-tiles/specification/) for the tiles now, not GeoJSON.
+
+Also the code may have rotted a little bit. The main thing that breaks is the download URLs
+for NHD become invalid. It's easy to update them (typically a version number increment). Pull
+requests welcome.
+
+## A vector tile demonstration and tutorial
+
+By [Nelson Minar](http://www.somebits.com/) <tt>&lt;[nelson@monkey.org](mailto:nelson@monkey.org)&gt;</tt><br>
+May 2013<br>
+See the [live map](http://www.somebits.com/rivers/rivers-d3leaflet.html)
+and [the source code](https://github.com/NelsonMinar/vector-river-map).
+
+<a href="http://www.somebits.com/rivers/rivers-polymaps.html#9/38.4385/-121.1270"><img src="https://raw.github.com/NelsonMinar/vector-river-map/master/sample.jpg" alt="sample map"></a>
+
+Many thanks to
+[Mike Bostock](http://bost.ocks.org/mike/),
+[Seth Fitzsimmons](https://github.com/mojodna),
+[Mike Migurski](http://mike.teczno.com/),
+and [Bobby Sudekum](http://visuallybs.com/)
+for feedback and help.
+
+
+## Introduction
+
+This project contains everything you need from start to finish to make a
+vector based web map of American rivers in the contiguous 48 states.
+This demonstration map is neither
+particularly beautiful nor complex, but it is a complete example of how
+to build a web map using tiled vector data into a web map. The source code is
+open source you are encouraged to read and tinker with.
+There are three parts to the project: data preparation, HTTP serving of
+vector tiles, and clients that render maps.
+The components integrated in this project are:
+
+1. [NHDPlus](http://www.horizon-systems.com/nhdplus/), the source data for river flowlines.
+2. [PostGIS](http://postgis.refractions.net/), a geographic database.
+3. [TileStache](http://tilestache.org/), a vector tile [GeoJSON](http://www.geojson.org/) server.
+4. [Gunicorn](http://gunicorn.org/), a Python web server container.
+5. [Leaflet](http://leafletjs.com/), [Polymaps](http://polymaps.org/), and
+[D3.js](http://d3js.org/), three Javascript libraries for rendering maps.
+
+It's a lot of pieces, but each one is pretty simple by itself. Combined
+together they form a powerful open source mapping stack for
+serving vector data to web browsers. You're welcome to [see the map running
+live](http://www.somebits.com/rivers/rivers-polymaps.html) on my server, but the real
+point of this project is to show developers all the pieces necessary to build
+their own map using vector tiles. Read on for details of how the map is
+constructed and be sure to
+[check out the source code](https://github.com/NelsonMinar/vector-river-map);
+lots of comments and a focus on readability. There are also some very
+detailed development notes on
+[my work journal](http://nelsonslog.wordpress.com/category/vector-rivers/).
+
+For client authors, the vector tiles are available as a service with
+the URL pattern
+`http://somebits.com:8001/rivers/{z}/{x}/{y}.json`.
+Light use only please; the server is not provisioned for real traffic.
+
+## Quick start
+
+* Install <a href="#server-prerequisites">required software</a>.
+* Run `dataprep/downloadNhd.sh` to download data to a directory named "NHD".
+* Run `dataprep/importNhd.sh` to bring data NHD into a PostGIS database named "rivers".
+* Run `serve.sh` from inside the `server` directory
+to start TileStache in Gunicorn at [http://localhost:8000/](http://localhost:8000/).
+* Load [a sample tile on localhost](http://localhost:8000/rivers/13/1316/3169.json)
+to verify GeoJSON tiles are being served.
+* Run `clients/serverTest.py` to do a quick test on the server.
+* Load `clients/rivers-leaflet.html`, `clients/rivers-polymaps.html`,
+`clients/rivers-d3.html`, or `clients/rivers-d3leaflet.html` to view the map.
+
+## About vector tiles
+
+Vector tiles are an exciting, underutilized idea to make
+efficient maps. Google Maps revolutioned online cartography with "slippy maps",
+raster maps that are a mosaïcof PNG or JPG images. But a lot of geographic data is
+intrinsically vector oriented, lines and polygons. Today many map servers
+render vector data into raster images that are then served to clients.
+But serving the vector data directly to the user's browser for rendering
+on the client can make maps that are  more flexible and more efficient.
+Mobile apps and proprietary services like Google Maps are starting to switch
+to vector maps.
+
+Open source vector mapping is still in the early stages. There are several
+open source vector clients:
+[Polymaps](http://polymaps.org/) was an early pioneer
+for browser maps,
+[MapsForge](https://code.google.com/p/mapsforge/) and
+[OpenScienceMap](http://www.opensciencemap.org/?page_id=2) are
+renderers for Android, and
+[MapBox 2](http://mapbox.com/blog/vector-tiles/) is based on
+[a vector tile stack](https://github.com/mapbox/mapnik-vector-tile).
+There are few open data vector services although recently
+[OpenStreetMap has experimented](http://wiki.openstreetmap.org/wiki/Vector_tiles)
+with serving [vector tiles](http://www.openstreetmap.us/~migurski/vector-datasource/).
+(See experimental clients like
+[Ziggy Jonsson's](http://bl.ocks.org/ZJONSSON/5529395),
+[Bobby Sudekum's](http://bl.ocks.org/rsudekum/5598998),
+and [Mike Bostock's](http://bl.ocks.org/mbostock/5593150).)
+And currently there are only a couple of open source vector tile servers.
+This tutorial relies on [TileStache's VecTiles
+provider](http://tilestache.org/doc/TileStache.Goodies.VecTiles.html) to
+serve our geodata.
+[Ceramic](https://github.com/mdaines/ceramic) is an alternative.
+
+Tiling isn't necessary for all vector data; if the full
+dataset is small it is reasonable to serve an entire vector geometry as a
+single file. For example,
+this tutorial maps incldues an 88kb file of US state outlines. But with
+10+MB of geodata it's important to only serve visible geometry, not the
+entire dataset. In addition scaling tiles to the current zoom level
+allows simplification and down-sampling to pixel visibility. But tiling
+requires a lot of data preparation and server setup, hence this tutorial.
+
+Vector tiles are ultimately quite simple. Consider [this tile near near
+Oakland](http://somebits.com:8001/rivers/13/1316/3169.json)
+(cached copy in [sample-13-1316-3169.json.txt](https://github.com/NelsonMinar/vector-river-map/blob/master/sample-13-1316-3169.json.txt)).
+The [URL naming system](http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/)
+is Google's convention for raster map tiles:
+this tile is at z=13, x=1316, y=3169.
+Only instead of serving a PNG image the URL serves a
+[GeoJSON file](http://www.geojson.org/) describing the geometry inside the
+tile's bounding box. This example tile has 3 features in it; one for
+San Lorenzo Creek, one for Sulphur Creek, and one for two other unnamed
+flows in the tile.
+Each feature contains a geometry, a name, a
+[HUC code](http://water.usgs.gov/GIS/huc.html) naming the watershed,
+and a [Strahler number](http://en.wikipedia.org/wiki/Strahler_Stream_Order)
+characterizing the river's significance.
+
+One tricky thing about vector
+tiles is what to do about features that cross tiles. In this tutorial we clip
+the geometry to the tile boundary and rely on the overlapping lines being
+drawn to make a seamless map. It's also possible to not clip, which results in
+redundant data but keeps features intact. A third option can be to clip geometry
+and re-unify it on the client before rendering.
+
+## Server prerequisites
+
+The following is a partial list of software you need installed on your Unix
+system to generate and serve these maps. (Sorry Windows users, Unix is a
+better choice for this kind of work.) I've tested with both MacOS and Ubuntu.
+On the Mac, most prerequisites are available via
+[Homebrew](http://mxcl.github.io/homebrew/); see also this
+[guide to open source geo on the Mac](https://github.com/nvkelso/geo-how-to/wiki/Installing-Open-Source-Geo-Software:-Mac-Edition).
+On Ubuntu most software is available via
+`apt-get`. This code requires PostGIS 2; if you are running something older than Ubuntu 14.04 you
+may need the [UbuntuGIS
+PPA](https://wiki.ubuntu.com/UbuntuGIS). See below for
+extra Ubuntu notes. Other Linux
+distributions can probably install the required software via their native
+package system. If the code is available on
+[PyPI](https://pypi.python.org/pypi) I prefer to install Python code with
+[`pip`](http://www.pip- installer.org/en/latest/) rather than rely on the Mac
+or Ubuntu package versions.
+
+* Python 2. I'd prefer Python 3 but some of the dependencies don't support it.
+* [curl](http://curl.haxx.se/) for downloading NHDPlus data from the web.
+* [p7zip](http://p7zip.sourceforge.net/) for unpacking NHDPlus data. Ubuntu users be sure to install `p7zip-full`.
+* [PostgreSQL](http://www.postgresql.org/) and [PostGIS](http://postgis.refractions.net/) for a geospatial database.
+PostgreSQL 9.1 or later and PostGIS 2 are recommended for ease of installing the PostGIS extension.
+This database is moderately large; you may want to [tune Postgres settings](http://nelsonslog.wordpress.com/2011/10/12/quick-postgresql-tuning-notes/) to use more memory.
+* [psycopg2](http://initd.org/psycopg/) for talking to Postgres from Python.
+* shp2pgsql, part of PostGIS, for importing ESRI shapefiles into PostGIS
+* [pgdbf](https://github.com/kstrauser/pgdbf) for importing DBF databases into PostgreSQL. Note you need at least version 0.6.2 for the `-s` flag.
+* [Gunicorn](http://gunicorn.org/) for a Python web app server.
+* [TileStache](http://tilestache.org/) for the Python web app that serves map tiles. TileStache has
+an undocumented dependency on [Shapely](https://pypi.python.org/pypi/Shapely)
+that you can install via `pip`.
+* [requests](http://docs.python-requests.org/en/latest/) and
+[grequests](https://github.com/kennethreitz/grequests) for `serverTest.py`, a Python HTTP client test.
+* [gdal](http://www.gdal.org/) is the low level library for open source geo.
+
+### Extra Ubuntu 16.04 details
+
+Not quite a complete cookbook, but close:
+
+```
+# Install needed software with apt and PIP
+apt-get install git p7zip-full python-pip postgresql-server-dev-all python-dev libevent-dev gdal-bin postgis postgresql-client postgresql pgdbf
+_create a virtualenv for python 2_
+pip install psycopg2 gunicorn tilestache mapbox-vector-tile==0.5.0 requests grequests shapely --allow-external PIL --allow-unverified PIL
+
+# Ensure postgres allows you to connect without a password
+echo 'select version();' | psql -w -U nelson -h localhost postgres
+# If this fails, configure postgres to let you connect via TCP to localhost without password
+# One option is to specify the "trust" method on 127.0.0.1/32
+edit /etc/postgresql/9.5/main/pg_hba.conf
+
+# Optionally tune postgres performance
+edit /etc/postgresql/9.5/main/postgresql.conf
 ```
 
-## Next Steps / Future Improvements
+## Project components
 
-### Short Term
-1. ✅ Push to GitHub
-2. Update GitHub repository description and topics
-3. Test Docker setup end-to-end
-4. Compare tile sizes between GeoJSON and MVT
+This project consists of several short scripts and configuration files to
+glue together the software components. There is precious little programming
+logic here, most of it is integration.
 
-### Medium Term
-1. Update data source to NHDPlus HR (high resolution)
-2. Add river name search functionality
-3. Implement watershed filtering
-4. Add mobile gesture support
-5. Create example custom MVT tile function
+* `dataprep/downloadNhd.sh` downloads data from [NHDPlus](http://www.horizon-
+systems.com/nhdplus/), a nice repository of cleaned up National Hydrographic
+Data distributed as ESRI shapefiles. This shell script takes care of
+downloading the files and then extracting the specific data files we're
+interested in. NHDPlus is a fantastic resource if you're interested in mapping
+water in the United States. Note by default the script only downloads data
+for California; edit the script if you want the entire US.
 
-### Long Term
-1. Add real-time data (stream gauges, flow rates)
-2. Create 3D terrain visualization
-3. Build mobile apps with MapLibre Native
-4. Add time-series animation for seasonal changes
-5. Integrate with other water datasets
+* `dataprep/importNhd.sh` imports the NHDPlus data into PostGIS and
+prepares it for serving. This script borrows ideas from [Seth Fitzsimmons'
+NHD importer](https://gist.github.com/mojodna/b1f169b33db907f2b8dd). Note that
+detailed output is logged to a file named `/tmp/nhd.log.*`, see the first line
+of script output for details. The steps this script takes are:<ol><li>Create a database named `rivers`
+<li>Import NHDFlowline shapefiles into a table named `nhdflowline`
+<li>Import PlusFlowlineVAA DBF files into a table named `plusflowlinevaa`
+<li>Run `processNhd.sql` to create a table named `rivers`
+<li>Run `mergeRivers.py` to create a table named `merged_rivers`
+</ol>
 
-## Teaching Use
+* `dataprep/processNhd.sql` prepares the imported data to a format more tailored
+to our needs. It makes a new table named `rivers` which joins
+the geometry from NHDFlowline with metadata such as river name,
+[reach code](http://nhd.usgs.gov/nhd_faq.html#q119), and
+[Strahler number](http://en.wikipedia.org/wiki/Strahler_number) from
+PlusFlowlineVAA. It has about 2.7 million rows for the whole US. (NHDFlowline
+has nearly 3 million rows; flowlines which have no comid in
+PlusFlowlineVAA are discarded.)
 
-This modernized project is perfect for teaching because:
+* `dataprep/mergeRivers.py` optimizes the data by merging geometry. NHD data
+has many tiny little rows for a single river. For efficiency
+we merge geometries based on river ID and the
+HUC8 portion of the reach code. The resulting `merged_rivers` table
+has about 330,000 rows.
+This step is complex and not strictly necessary &mdash;
+TileStache can serve the geometry
+in the `rivers` table directly. But the resulting GeoJSON is large and slow
+to render;
+merging each river into a single LineString or MultiLineString results in
+vector tiles roughly one tenth the size and time to process.
 
-1. **Dual Implementations**: Old and new code side-by-side
-2. **Clear Migration Path**: Shows evolution of web mapping
-3. **Well Documented**: Extensive comments and guides
-4. **Complete Stack**: From data prep to visualization
-5. **Modern Best Practices**: Docker, Python 3, WebGL
-6. **Experimental Ready**: Easy to add new features
+* `server/serve.sh` is a simple shell script to invoke Gunicorn and the TileStache
+webapp and serve it at [http://localhost:8000/](http://localhost:8000/).
+In a real production deployment this should be replaced with a server
+management framework. (It's also possible to serve TileStache via CGI, but
+it's terribly slow.)
 
-## Resources Created
+* `server/gunicorn.cfg.py` is the Gunicorn server configuration. There's very little
+here in this example, Gunicorn has [many configuration
+options](http://docs.gunicorn.org/en/latest/configure.html).
 
-All documentation is self-contained:
-- `SETUP.md` - How to set everything up
-- `MODERNIZATION.md` - What changed and why
-- `GIT_WORKFLOW.md` - How to push to GitHub
-- Comments in code explain everything
-- Docker Compose handles deployment
+* `server/tilestache.cfg` sets up TileStache to serve a single layer named `rivers`
+from the `merged_rivers` table, backed by a cache in `/tmp/stache`.
+It uses the [VecTiles
+provider](http://tilestache.org/doc/TileStache.Goodies.VecTiles.html), the
+magic in TileStache that takes care of doing PostGIS queries and preparing
+nicely cropped GeoJSON tiles. At this layer we start making significant
+cartographic decisions.
 
-## Backward Compatibility
+* `clients/serverTest.py` is a simple Python client test that inspects a few
+vector tiles for basic correctness and reports load times.
+`clients/slowTiles.py`
+is another simple test client for timing a few particularly slow
+tiles for the larger US data set.
 
-Everything old still works:
-- Original clients still render
-- TileStache config preserved
-- Can run both old and new side-by-side
-- No breaking changes to data pipeline
-- Easy to rollback if needed
+* `clients/rivers-leaflet.html`, `clients/rivers-polymaps.html`,
+`clients/rivers-d3.html`, and `clients/rivers-d3leaflet.html`
+are four different implementations of
+Javascript map renderers. They each load vector tiles from URLs like
+`http://localhost:8000/rivers/{z}/{x}/{y}.json` and render them as SVG.
+Most versions also load a couple of other map layers for context: a
+[shaded relief map from ESRI](http://www.arcgis.com/home/item.html?id=9c5370d0b54f4de1b48a3792d7377ff2)
+and vector outlines of US states.<br><br>The differences between these
+clients are which Javascript libraries are used
+to implement the map. [Leaflet](http://leafletjs.com/) is an actively
+maintained excellent Javascript map library; `rivers-leaflet` uses
+vector tile support from Glen Robertson's [leaflet-tilelayer-geojson
+plugin](https://github.com/glenrobertson/leaflet-tilelayer-geojson),
+whereas `rivers-d3leaflet` uses a Leaflet/D3 hybrid
+that is fast but not feature complete.
+[Polymaps](http://polymaps.org/) is an older Javascript map library that is no
+longer actively maintained. Polymaps pioneered the vector tile idea and
+renders vector maps very efficiently. [D3.js](http://d3js.org/) is a
+visualization toolkit with strong geographic data capabilities. The D3
+implementation is more of a demo than a complete map and is heavily
+borrowed from [an example by Mike Bostock](http://bl.ocks.org/mbostock/5593150).
 
-## Questions?
+## Cartographic decisions
 
-If you need help with:
-- Pushing to GitHub → See `GIT_WORKFLOW.md`
-- Running the code → See `SETUP.md`
-- Understanding changes → See `MODERNIZATION.md`
-- Specific features → Check the code comments
+Most of the work in this project is plumbing, systems programming
+we have to do to make the engines go. The demonstration map is deliberately
+quite simple and unsophisticated. Even so, it contains a few
+decisions requiring the map maker's art.
 
-## Acknowledgments
+Most of the actual cartography is being done in Javascript, in the Leaflet and
+Polymaps drawing scripts. This tutorial code does very little, mostly just drawing
+blue lines in varying thicknesses. In addition
+the Leaflet version has a simple popup when rivers are clicked. With the
+actual vector geometry and metadata available in Javascript a lot more could
+be done in the presentation; highlighting rivers, interactive filtering by
+Strahler number, combination with other vector data sources, etc.
 
-This modernization builds on Nelson Minar's excellent 2013 tutorial. The core concepts remain brilliant - we've just updated the implementation to use modern, maintained tools while preserving the educational value of the original work.
+The map clients presented here all use the Google Mercator projection, as is
+standard for web maps. But because the river data is vector oriented it's
+possible to project it in other ways. For example, see
+[Jason Davies' Albers rivers map](http://www.jasondavies.com/maps/us-rivers/).
+
+Some cartographic decisions are made on the server side. The TileStache
+VecTiles configuration contains an array of queries that return results at
+different zoom levels. At high zoom levels (say z=4) we only return rivers
+which are relatively big, those with a [Strahler
+number](http://en.wikipedia.org/wiki/Strahler_number) of 6 or higher. At finer
+grained zoom levels we return more and smaller rivers. This per-zoom filtering
+both limits the bandwidth used on large scale maps and prevents the display
+from being overcluttered. Rendering zillions of tiny streams can be
+[quite beautiful](http://www.flickr.com/photos/nelsonminar/sets/72157633504361549/detail/),
+but also resource intensive.
+
+VecTiles also simplifies the
+geometry, serving only the precision needed at the zoom level. You can
+see this in action if you watch it re-render as you navigate; rivers will
+start to grow more bends and detail as you zoom in. TileStache does that for
+us automatically.
+
+
+
+## Project ideas
+
+
+The map provided here is a simple tutorial demonstration. To make
+this a better map, some possible directions:
+
+* More beautiful river rendering. The rivers here are drawn as simple blue
+lines with a thickness based on the zoom level and the river's Strahler number,
+a topological measure of its distance from headwaters.
+The map could be made more beautiful by
+[varying the river color too](http://blog.dwtkns.com/2011/generic-stream-terms/),
+or bringing in extra information on river size such as flow rate or average
+channel width. See this [Pacific Institute map](http://www.pacinst.org/american-rivers-a-graphic/)
+for an example using flow estimates from NHD's EROM_MA0001 table.
+
+* More thematic data. The ESRI relief tiles are a nice base map because they show the
+natural relationship between terrain and river flow, but it's pretty minimal.
+Why not add some ponds and lakes, or ground cover coloring,
+or cities and major roads?
+
+* Use a better HTTP server. Gunicorn is designed to run behind a proxy like
+Nginx or Apache. Not only does a proxy handle slow clients better, it can
+serve appropriate caching headers and gzip the JSON output. The file
+`server/nginx-rivers.conf` is how the tiles are served on the
+[live server](http://www.somebits.com/rivers/rivers-polymaps.html#9/38.4385/-121.1270).
+
+* More efficient vector tiles. The code here downloads a new set of tiles for
+every zoom level. But that's needlessly redundant; it's feasible to only
+download new tiles every few zoom levels and trade off pixel-perfect accuracy
+for smaller bandwidth.
+
+* Convert to TopoJSON for smaller encoding. Even without shared topology
+[TopoJSON](https://github.com/mbostock/topojson)
+encoding can be significantly smaller than equivalent GeoJSON. See
+[Mike Bostock's experiments](https://github.com/mbostock/us-rivers)
+converting the entire river network to one giant TopoJSON file.
+
+* Measure and improve client render time. The D3 version of the client shows that
+rendering can happen very fast. Unfortunately Leaflet's GeoJSON rendering is pretty
+slow and Polymaps somewhere in the middle. Some quality time with Chrome
+Developer Tools could help figure out where to optimize Leaflet, or maybe the
+`lib/TileLayer.d3_geoJSON.js` library could be extended to support all the
+features of a Leaflet tile layer.
+
+* WebGL or Canvas clients. All three Javascript clients in this tutorial render
+via SVG. That's a natural choice for vector data but it can be slow, particularly
+on mobile browsers. WebGL is a very interesting option; see
+[Migurski's experiments](http://mike.teczno.com/notes/gl-solar-webgl-openstreetmap.html)
+with WebGL and vector maps.
+
+* Alternate projections. The spherical mercator we use for web maps is a reasonable
+compromise, but other projections can be interesting. See
+[Jason Davies' Albers rivers map](http://www.jasondavies.com/maps/us-rivers/),
+[Jason's canvas raster reprojection](http://www.jasondavies.com/maps/raster/),
+and [Mike Bostock's WebGL raster reprojection](http://bl.ocks.org/mbostock/5446416).
+
+* Extend data coverage to Alaska, Hawai&#699;i, and other countries.
+[Natural Earth](http://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-rivers-lake-centerlines/)
+is a good place to start. It also has links to other sources like
+[Europe's CCM2](http://ccm.jrc.ec.europa.eu/php/index.php?action=view&id=23).
+[Australia](http://www.bom.gov.au/water/geofabric/) has data too!
+
+## Conclusion
+
+The [vector river map](https://github.com/NelsonMinar/vector-river-map)
+lays out all the components required to make an open source
+vector map, from downloading the data to preparing it in a database
+to serving tiles on the Web to rendering those tiles in the browser. 
