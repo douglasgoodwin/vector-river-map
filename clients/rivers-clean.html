@@ -77,12 +77,12 @@
                     }
                 },
                 layers: [
-                    // White background
+                    // Very subtle off-white background to match reference
                     {
                         id: 'background',
                         type: 'background',
                         paint: {
-                            'background-color': '#ffffff'
+                            'background-color': '#f8f9fa'
                         }
                     },
                     // Rivers - varying width by Strahler order
@@ -91,46 +91,51 @@
                         type: 'line',
                         source: 'rivers',
                         'source-layer': 'public.merged_rivers',
+                        layout: {
+                            // Round caps and joins for smooth lines
+                            'line-cap': 'round',
+                            'line-join': 'round'
+                        },
                         paint: {
-                            // Blue color like the reference image
-                            'line-color': '#2563eb',
-                            // Width based on Strahler order and zoom
+                            // Lighter blue to match reference image
+                            'line-color': '#4169E1', // Royal blue, slightly lighter
+                            // Thinner lines to match the delicate reference aesthetic
                             'line-width': [
                                 'interpolate',
-                                ['exponential', 1.5],
+                                ['exponential', 1.6],
                                 ['zoom'],
-                                4, [
+                                3, [
                                     'match',
                                     ['get', 'strahler'],
-                                    6, 2,
-                                    5, 1.5,
-                                    4, 1,
-                                    3, 0.7,
-                                    2, 0.5,
-                                    0.3
+                                    6, 1.2,
+                                    5, 0.9,
+                                    4, 0.6,
+                                    3, 0.4,
+                                    2, 0.3,
+                                    0.2
                                 ],
-                                10, [
+                                8, [
                                     'match',
                                     ['get', 'strahler'],
-                                    6, 6,
-                                    5, 4,
-                                    4, 3,
-                                    3, 2,
-                                    2, 1.5,
-                                    1
+                                    6, 3,
+                                    5, 2.2,
+                                    4, 1.6,
+                                    3, 1.1,
+                                    2, 0.8,
+                                    0.5
                                 ],
-                                14, [
+                                12, [
                                     'match',
                                     ['get', 'strahler'],
-                                    6, 10,
-                                    5, 7,
-                                    4, 5,
-                                    3, 3,
-                                    2, 2,
-                                    1.5
+                                    6, 5,
+                                    5, 3.5,
+                                    4, 2.5,
+                                    3, 1.8,
+                                    2, 1.2,
+                                    0.8
                                 ]
                             ],
-                            'line-opacity': 0.85
+                            'line-opacity': 0.75
                         }
                     }
                 ]
