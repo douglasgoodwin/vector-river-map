@@ -98,40 +98,40 @@
                         },
                         paint: {
                             // Lighter blue to match reference image
-                            'line-color': '#4169E1', // Royal blue, slightly lighter
-                            // Thinner lines to match the delicate reference aesthetic
+                            'line-color': '#4169E1',
+                            // Width based on Strahler order with proper exponential scaling
                             'line-width': [
                                 'interpolate',
-                                ['exponential', 1.6],
+                                ['exponential', 2],
                                 ['zoom'],
-                                3, [
-                                    'match',
-                                    ['get', 'strahler'],
-                                    6, 1.2,
-                                    5, 0.9,
-                                    4, 0.6,
-                                    3, 0.4,
-                                    2, 0.3,
+                                4, [
+                                    'case',
+                                    ['>=', ['get', 'strahler'], 7], 2.5,
+                                    ['>=', ['get', 'strahler'], 6], 1.8,
+                                    ['>=', ['get', 'strahler'], 5], 1.2,
+                                    ['>=', ['get', 'strahler'], 4], 0.8,
+                                    ['>=', ['get', 'strahler'], 3], 0.5,
+                                    ['>=', ['get', 'strahler'], 2], 0.3,
                                     0.2
                                 ],
                                 8, [
-                                    'match',
-                                    ['get', 'strahler'],
-                                    6, 3,
-                                    5, 2.2,
-                                    4, 1.6,
-                                    3, 1.1,
-                                    2, 0.8,
-                                    0.5
+                                    'case',
+                                    ['>=', ['get', 'strahler'], 7], 6,
+                                    ['>=', ['get', 'strahler'], 6], 4.5,
+                                    ['>=', ['get', 'strahler'], 5], 3,
+                                    ['>=', ['get', 'strahler'], 4], 2,
+                                    ['>=', ['get', 'strahler'], 3], 1.2,
+                                    ['>=', ['get', 'strahler'], 2], 0.7,
+                                    0.4
                                 ],
                                 12, [
-                                    'match',
-                                    ['get', 'strahler'],
-                                    6, 5,
-                                    5, 3.5,
-                                    4, 2.5,
-                                    3, 1.8,
-                                    2, 1.2,
+                                    'case',
+                                    ['>=', ['get', 'strahler'], 7], 10,
+                                    ['>=', ['get', 'strahler'], 6], 7,
+                                    ['>=', ['get', 'strahler'], 5], 5,
+                                    ['>=', ['get', 'strahler'], 4], 3.5,
+                                    ['>=', ['get', 'strahler'], 3], 2,
+                                    ['>=', ['get', 'strahler'], 2], 1.2,
                                     0.8
                                 ]
                             ],

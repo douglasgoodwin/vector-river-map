@@ -3,9 +3,9 @@ A Map of American Rivers
 
 ![](example.jpg)
 
-## 🔄 2025 Modernization Update
+## 2025 Update
 
-**This project has been modernized for 2025!** The core concepts from Nelson Minar's excellent 2013 tutorial remain valid, but the implementation has been updated with modern tools and best practices.
+**This project has been modernized for 2025** The core concepts from Nelson Minar's excellent 2013 tutorial remain valid, but the implementation has been updated with modern tools and best practices.
 
 ### What's New in 2025
 
@@ -54,9 +54,7 @@ See **[SETUP.md](SETUP.md)** for detailed instructions and **[dataprep/README.md
 
 ## Beautiful Clean River Visualization
 
-The modernized version includes **`rivers-clean.html`** - a beautiful, minimal client that renders rivers as delicate blue lines on a clean background, creating stunning dendritic (tree-like) drainage patterns.
-
-![Clean river visualization showing dendritic patterns](sample.jpg)
+The modernized version includes **`rivers-clean.html`** - a minimal client that renders rivers as delicate blue lines on a clean background, creating stunning dendritic (tree-like) drainage patterns.
 
 **Features:**
 - Clean white/off-white background (no terrain clutter)
@@ -93,7 +91,7 @@ This classification is the scientific standard used by hydrologists and creates 
 
 ---
 
-## Warning (January 2018)
+## Original notes (1/2018)
 
 This project is now nearly five years old. Huzzah! It is also slowly falling out of date.
 Many of the ideas in it are still relevant but vector tile technology has improved
@@ -242,6 +240,7 @@ and re-unify it on the client before rendering.
 The following is a partial list of software you need installed on your Unix
 system to generate and serve these maps. (Sorry Windows users, Unix is a
 better choice for this kind of work.) I've tested with both MacOS and Ubuntu.
+
 On the Mac, most prerequisites are available via
 [Homebrew](http://mxcl.github.io/homebrew/); see also this
 [guide to open source geo on the Mac](https://github.com/nvkelso/geo-how-to/wiki/Installing-Open-Source-Geo-Software:-Mac-Edition).
@@ -486,9 +485,3 @@ is a good place to start. It also has links to other sources like
 [Europe's CCM2](http://ccm.jrc.ec.europa.eu/php/index.php?action=view&id=23).
 [Australia](http://www.bom.gov.au/water/geofabric/) has data too!
 
-## Conclusion
-
-The [vector river map](https://github.com/NelsonMinar/vector-river-map)
-lays out all the components required to make an open source
-vector map, from downloading the data to preparing it in a database
-to serving tiles on the Web to rendering those tiles in the browser. 
