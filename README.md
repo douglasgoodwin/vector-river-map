@@ -1,4 +1,6 @@
-# Modernized Vector River Map - Download Package
+# Modernized Vector River Map
+
+![](example.jpg)
 
 ## What's in This Package
 
